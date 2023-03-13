@@ -15,6 +15,8 @@ import { fetchBalance } from '@wagmi/core'
 import { fetchFeeData } from '@wagmi/core'
 import { useDebounce } from 'use-debounce'
 import { usePrepareSendTransaction,  useSendTransaction } from 'wagmi'
+import WalletConnectProvider from '@web3modal/walletconnect-provider'
+
 
 
 const chains = [arbitrum, mainnet, polygon]
@@ -25,7 +27,7 @@ const queryClient = new QueryClient()
 
 //console.log(projectId)
 
-const { provider } = configureChains(chains, [w3mProvider({ projectId })])
+const { provider } = configureChains(chains, [WalletConnectProvider])
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: w3mConnectors({ projectId, version: 1, chains }),
