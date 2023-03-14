@@ -4,7 +4,7 @@ import styles from '@/styles/Home.module.css'
 import { EthereumClient, w3mConnectors, w3mProvider } from '@web3modal/ethereum'
 import { Web3Modal } from '@web3modal/react'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
-import { arbitrum, mainnet, polygon } from 'wagmi/chains'
+import { arbitrum, mainnet, polygon, goerli } from 'wagmi/chains'
 import { Web3Button } from '@web3modal/react'
 import { useAccount, useContract, useSigner, useBalance } from 'wagmi'
 import Homepage from '../components/Homepage'
@@ -15,11 +15,10 @@ import { fetchBalance } from '@wagmi/core'
 import { fetchFeeData } from '@wagmi/core'
 import { useDebounce } from 'use-debounce'
 import { usePrepareSendTransaction,  useSendTransaction } from 'wagmi'
-import WalletConnectProvider from '@web3modal/walletconnect-provider'
 
 
 
-const chains = [arbitrum, mainnet, polygon]
+const chains = [arbitrum, mainnet, polygon, goerli]
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 const contractAddress = process.env.NEXT_PUBLIC_CONTRACT
 const queryClient = new QueryClient()
@@ -27,7 +26,7 @@ const queryClient = new QueryClient()
 
 //console.log(projectId)
 
-const { provider } = configureChains(chains, [WalletConnectProvider])
+const { provider } = configureChains(chains, [w3mProvider({ projectId })])
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: w3mConnectors({ projectId, version: 1, chains }),
