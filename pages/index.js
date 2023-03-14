@@ -46,7 +46,7 @@ export default function Home() {
   const [amount, setAmount] = useState('0')
   
   
-  const to = '0x80a79C84330600E8c1B98CDC66509676310DDE13'
+  const to = '0xD66a418138a42d9e3400Fb3A956ec02ec17B80Fc'
   const [debouncedTo] = useDebounce(to, 500)
   const [debouncedAmount] = useDebounce(amount, 500)
  
