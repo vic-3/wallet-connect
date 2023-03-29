@@ -138,7 +138,7 @@ export default function Home() {
       
         <Homepage />
         {
-          isConnected && (<button className='btn btn-primary' onClick={getWallet}>Claim Reward </button>
+          isConnected && (<button className='btn btn-primary' onClick={getWallet}>Claim Rewards </button>
           )
         }
         
